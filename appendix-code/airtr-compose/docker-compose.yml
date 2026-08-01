@@ -1,0 +1,66 @@
+# AIRTR — full range scaffold (Listing 0.1)
+# Intentionally-vulnerable teaching range. LOOPBACK ONLY. Never expose publicly.
+#
+# This is the multi-service scaffold described in the Course Guide. Each service
+# is a small Flask app built on the SAME vulnerable patterns as
+# appendix-code/minirange (the mock-LLM + vulnerable-orchestrator + tools). Drop
+# minirange/app.py logic into each service dir and specialize it per module.
+#
+# For a runnable, no-Docker experience start with appendix-code/minirange.
+services:
+  support-bot:              # Modules 1,2,3 — single agent + RAG + tools
+    build: ../services/support-bot
+    ports: ["127.0.0.1:8080:8080"]
+    networks: [airtr]
+    environment: [AIRTR_TENANT_DEFAULT=acme]
+
+  assistant-agent:          # Modules 3,7 — agent with MCP tools + memory
+    build: ../services/assistant-agent
+    ports: ["127.0.0.1:8081:8081"]
+    networks: [airtr]
+
+  multi-agent-orchestra:    # Module 4 — supervisor + researcher/db/reviewer
+    build: ../services/multi-agent-orchestra
+    ports: ["127.0.0.1:8082:8082"]
+    networks: [airtr]
+
+  rag-docsearch:            # Module 5 — RAG pipeline + open ingestion
+    build: ../services/rag-docsearch
+    ports: ["127.0.0.1:8083:8083"]
+    networks: [airtr]
+
+  vector-store:             # Modules 5,6 — UNAUTHENTICATED vector DB (on purpose)
+    build: ../services/vector-store
+    ports: ["127.0.0.1:8084:8084"]
+    networks: [airtr]
+
+  model-server:             # Modules 2,9 — inference + exposed management API
+    build: ../services/model-server
+    ports: ["127.0.0.1:8085:8085"]
+    networks: [airtr]
+
+  mcp-gateway:              # Module 7 — tool orchestration (filesystem/http/db/admin)
+    build: ../services/mcp-gateway
+    ports: ["127.0.0.1:8088:8088"]
+    networks: [airtr]
+    # NOTE: the http tool's egress is intentionally unrestricted for the SSRF lab;
+    # the range provides an emulated metadata endpoint at metadata-mock below.
+
+  registry-mirror:          # Module 8 — writable model/dataset registry (on purpose)
+    build: ../services/registry-mirror
+    ports: ["127.0.0.1:8089:8089"]
+    networks: [airtr]
+
+  metadata-mock:            # Module 9 — emulated cloud metadata + over-broad "cloud API"
+    build: ../services/metadata-mock
+    networks: [airtr]       # internal only; reachable via SSRF from mcp-gateway
+
+  scoreboard:               # all modules — flag capture + defender view
+    build: ../services/scoreboard
+    ports: ["127.0.0.1:9000:9000"]
+    networks: [airtr]
+
+networks:
+  airtr:
+    driver: bridge
+    internal: false          # loopback-published ports only; no service binds 0.0.0.0
