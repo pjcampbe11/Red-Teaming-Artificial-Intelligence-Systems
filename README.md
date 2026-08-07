@@ -3342,15 +3342,19 @@ This directory holds the runnable code referenced throughout the guide as "Listi
 
 ## What's included and how it's organized
 
-The full production AIRTR (the 9-service Docker range described in the Course Guide) is large; to keep this appendix runnable **on any machine with only Python 3.10+ and no model downloads**, the library ships two things:
+The `appendix-code/` directory ships the runnable lab that accompanies the
+course. Everything runs on any machine with **Python 3.10+** (Docker optional),
+with **no model downloads, no GPU, and no API keys** — each service uses a
+shared, deliberately-vulnerable mock LLM and hashing embedder in
+`airtr/common/`.
 
-1. **`minirange/` — a self-contained, runnable teaching range.** A single Python package (Flask + a deliberately-vulnerable **mock LLM** that *follows instructions found in its context*, so you can reproduce the core vulnerability classes deterministically and offline). It demonstrates: indirect prompt injection, insecure output handling → SQLi, confused-deputy tool abuse, RAG poisoning, and a cross-tenant retrieval-filter bypass. Start here — it needs no GPU, no Docker, no API keys.
-
-2. **`listings/` — standalone scripts** for the module exercises that stand on their own: embedding inversion / nearest-neighbor recovery (Listing 6.2/6.3), the safe malicious-pickle-on-load demonstration with a safetensors contrast (Listing 8.2), and helpers.
-
-3. **`airtr-compose/` — the Docker range scaffold** (`docker-compose.yml`, `.env.example`, service stubs) matching the Course Guide's layout, for readers who want to build out the full multi-service range. The mock-LLM and vulnerable-app patterns from `minirange/` drop into each service.
-
-4. **`capstone-sample-report.md`** — the reference report and purple-team debrief table for Module 11.
+**`airtr/` — the full AI Red Team Range (10 services).** A complete,
+   Docker-composed lab matching the Course Guide's architecture: `support-bot`,
+   `assistant-agent`, `multi-agent-orchestra`, `rag-docsearch`, `vector-store`,
+   `model-server`, `mcp-gateway`, `registry-mirror`, `metadata-mock`, and a
+   `scoreboard` with a live dashboard and `/defender` view. Ships a self-test
+   that verifies **30 exploit paths** across Modules 1–9. **Start here for the
+   full course lab.**
 
 ## Quick start (minirange, offline, no Docker)
 
