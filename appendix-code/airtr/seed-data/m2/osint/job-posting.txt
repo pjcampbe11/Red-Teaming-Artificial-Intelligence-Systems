@@ -1,0 +1,8 @@
+Northwind Analytics — Senior ML Platform Engineer
+
+You will work on our customer-facing AI assistant and internal automation.
+Stack: Python, LangChain for orchestration, Qdrant as our vector database,
+vLLM serving open-weights models on EKS (Kubernetes), MLflow for experiment
+tracking and the model registry. We use an MCP-based tool gateway for the
+assistant's tools. Bonus: experience hardening RAG pipelines and multi-agent
+systems.

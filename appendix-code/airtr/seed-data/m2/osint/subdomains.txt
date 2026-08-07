@@ -1,0 +1,8 @@
+# certificate-transparency / passive DNS findings (synthetic)
+chat.northwind.example        -> support bot
+ai.northwind.example          -> internal assistant
+vector.northwind.example      -> Qdrant vector store
+mlflow.northwind.example      -> MLflow registry
+infer.northwind.example       -> vLLM inference
+mcp.northwind.example         -> MCP tool gateway
+notebooks.northwind.example   -> Jupyter (exposed)

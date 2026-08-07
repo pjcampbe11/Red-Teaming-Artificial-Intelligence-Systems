@@ -1,0 +1,78 @@
+# AIRTR — AI Red Team Range (intentionally vulnerable). LOOPBACK ONLY.
+# Never expose these ports on a public interface or a shared host.
+#
+#   docker compose up -d
+#   open http://localhost:9000        (scoreboard)
+#
+# All services share one parametrized Dockerfile (build ARG SERVICE).
+x-svc: &svc
+  build:
+    context: .
+    dockerfile: Dockerfile
+  restart: unless-stopped
+  networks: [airtr]
+
+services:
+  scoreboard:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: scoreboard}}
+    ports: ["127.0.0.1:9000:9000"]
+
+  support-bot:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: support-bot}}
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on: [scoreboard]
+
+  assistant-agent:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: assistant-agent}}
+    ports: ["127.0.0.1:8081:8081"]
+    depends_on: [scoreboard]
+
+  multi-agent-orchestra:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: multi-agent-orchestra}}
+    ports: ["127.0.0.1:8082:8082"]
+    depends_on: [scoreboard]
+
+  rag-docsearch:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: rag-docsearch}}
+    ports: ["127.0.0.1:8083:8083"]
+    depends_on: [scoreboard]
+
+  vector-store:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: vector-store}}
+    ports: ["127.0.0.1:8084:8084"]
+    depends_on: [scoreboard]
+
+  model-server:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: model-server}}
+    ports: ["127.0.0.1:8085:8085"]
+    depends_on: [scoreboard]
+
+  mcp-gateway:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: mcp-gateway}}
+    ports: ["127.0.0.1:8088:8088"]
+    depends_on: [scoreboard]
+
+  registry-mirror:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: registry-mirror}}
+    ports: ["127.0.0.1:8089:8089"]
+    depends_on: [scoreboard]
+
+  # internal only — reachable via SSRF from mcp-gateway/assistant, not published
+  metadata-mock:
+    <<: *svc
+    build: {context: ., dockerfile: Dockerfile, args: {SERVICE: metadata-mock}}
+    expose: ["8090"]
+    depends_on: [scoreboard]
+
+networks:
+  airtr:
+    driver: bridge

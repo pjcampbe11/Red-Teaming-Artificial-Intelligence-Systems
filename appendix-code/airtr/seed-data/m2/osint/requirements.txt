@@ -1,0 +1,7 @@
+langchain==0.1.16
+qdrant-client==1.9.0
+vllm==0.4.2
+mlflow==2.12.1
+sentence-transformers==2.7.0
+flask==3.0.3
+requests==2.31.0
