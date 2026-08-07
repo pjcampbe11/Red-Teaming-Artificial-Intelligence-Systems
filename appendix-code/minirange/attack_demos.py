@@ -12,7 +12,7 @@ Uses only the standard library (urllib), so only the server needs Flask.
 import json
 import urllib.request
 
-BASE = "http://127.0.0.1:8080"
+BASE = "http://127.0.0.1:8080" # Change to something different if the device used is also running burp \0/
 
 def post(path, payload):
     req = urllib.request.Request(BASE + path,
